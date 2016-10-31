@@ -1,0 +1,129 @@
+class_name: Model
+config:
+  input_layers:
+  - [input, 0, 0]
+  layers:
+  - class_name: InputLayer
+    config:
+      batch_input_shape: !!python/tuple [null, null, 128]
+      input_dtype: float32
+      name: input
+      sparse: false
+    inbound_nodes: []
+    name: input
+  - class_name: Convolution1D
+    config: {W_constraint: null, W_regularizer: null, activation: linear, activity_regularizer: null,
+      b_constraint: null, b_regularizer: null, bias: true, border_mode: valid, filter_length: 5,
+      init: uniform, input_dim: null, input_length: null, name: convolution_1, nb_filter: 256,
+      subsample_length: 1, trainable: true}
+    inbound_nodes:
+    - - [input, 0, 0]
+    name: convolution_1
+  - class_name: Activation
+    config: {activation: relu, name: activation_1, trainable: true}
+    inbound_nodes:
+    - - [convolution_1, 0, 0]
+    name: activation_1
+  - class_name: MaxPooling1D
+    config: {border_mode: valid, name: maxpooling1d_1, pool_length: 2, stride: 2,
+      trainable: true}
+    inbound_nodes:
+    - - [activation_1, 0, 0]
+    name: maxpooling1d_1
+  - class_name: Convolution1D
+    config: {W_constraint: null, W_regularizer: null, activation: linear, activity_regularizer: null,
+      b_constraint: null, b_regularizer: null, bias: true, border_mode: valid, filter_length: 5,
+      init: uniform, input_dim: null, input_length: null, name: convolution_2, nb_filter: 256,
+      subsample_length: 1, trainable: true}
+    inbound_nodes:
+    - - [maxpooling1d_1, 0, 0]
+    name: convolution_2
+  - class_name: Activation
+    config: {activation: relu, name: activation_2, trainable: true}
+    inbound_nodes:
+    - - [convolution_2, 0, 0]
+    name: activation_2
+  - class_name: MaxPooling1D
+    config: {border_mode: valid, name: maxpooling1d_2, pool_length: 2, stride: 2,
+      trainable: true}
+    inbound_nodes:
+    - - [activation_2, 0, 0]
+    name: maxpooling1d_2
+  - class_name: Convolution1D
+    config: {W_constraint: null, W_regularizer: null, activation: linear, activity_regularizer: null,
+      b_constraint: null, b_regularizer: null, bias: true, border_mode: valid, filter_length: 5,
+      init: uniform, input_dim: null, input_length: null, name: convolution_3, nb_filter: 256,
+      subsample_length: 1, trainable: true}
+    inbound_nodes:
+    - - [maxpooling1d_2, 0, 0]
+    name: convolution_3
+  - class_name: Activation
+    config: {activation: relu, name: activation_3, trainable: true}
+    inbound_nodes:
+    - - [convolution_3, 0, 0]
+    name: activation_3
+  - class_name: MaxPooling1D
+    config: {border_mode: valid, name: maxpooling1d_3, pool_length: 2, stride: 2,
+      trainable: true}
+    inbound_nodes:
+    - - [activation_3, 0, 0]
+    name: maxpooling1d_3
+  - class_name: Dropout
+    config: {name: dropout_1, p: 0.5, trainable: true}
+    inbound_nodes:
+    - - [maxpooling1d_3, 0, 0]
+    name: dropout_1
+  - class_name: LSTM
+    config: {U_regularizer: null, W_regularizer: null, activation: tanh, b_regularizer: null,
+      consume_less: cpu, dropout_U: 0.0, dropout_W: 0.0, forget_bias_init: one, go_backwards: false,
+      init: glorot_uniform, inner_activation: hard_sigmoid, inner_init: orthogonal,
+      input_dim: 256, input_length: null, name: lstm_1, output_dim: 256, return_sequences: true,
+      stateful: false, trainable: true, unroll: false}
+    inbound_nodes:
+    - - [dropout_1, 0, 0]
+    name: lstm_1
+  - class_name: Dropout
+    config: {name: dropout_2, p: 0.5, trainable: true}
+    inbound_nodes:
+    - - [lstm_1, 0, 0]
+    name: dropout_2
+  - class_name: TimeDistributed
+    config:
+      layer:
+        class_name: Dense
+        config: {W_constraint: null, W_regularizer: null, activation: linear, activity_regularizer: null,
+          b_constraint: null, b_regularizer: null, bias: true, init: glorot_uniform,
+          input_dim: null, name: dense_1, output_dim: 10, trainable: true}
+      name: timedistributed_1
+      trainable: true
+    inbound_nodes:
+    - - [dropout_2, 0, 0]
+    name: timedistributed_1
+  - class_name: Activation
+    config: {activation: softmax, name: output_realtime, trainable: true}
+    inbound_nodes:
+    - - [timedistributed_1, 0, 0]
+    name: output_realtime
+  - class_name: Lambda
+    config:
+      arguments: {}
+      function: !!python/tuple ["c\x01\0\0\0\x01\0\0\0\x04\0\0\0S\0\0\0s\x13\0\0\0\
+          t\0\0j\x01\0|\0\0d\x01\0d\x02\0\x83\x01\x01S(\x03\0\0\0Nt\x04\0\0\0axisi\x01\
+          \0\0\0(\x02\0\0\0t\x01\0\0\0Kt\x04\0\0\0mean(\x01\0\0\0t\x01\0\0\0x(\0\0\
+          \0\0(\0\0\0\0s\x0E\0\0\0train_model.pyt\b\0\0\0<lambda>9\0\0\0s\0\0\0\0",
+        null, null]
+      function_type: lambda
+      name: output_merged
+      output_shape: !!python/tuple [!!python/unicode "c\x01\0\0\0\x01\0\0\0\x03\0\0\
+          \0S\0\0\0s\x13\0\0\0|\0\0d\x01\0\x19f\x01\0|\0\0d\x02\0\x1F\x17S(\x03\0\0\
+          \0Ni\0\0\0\0i\x02\0\0\0(\0\0\0\0(\x01\0\0\0t\x05\0\0\0shape(\0\0\0\0(\0\0\
+          \0\0s\x0E\0\0\0train_model.pyt\b\0\0\0<lambda>:\0\0\0s\0\0\0\0", null, null]
+      output_shape_type: lambda
+      trainable: true
+    inbound_nodes:
+    - - [output_realtime, 0, 0]
+    name: output_merged
+  name: model_1
+  output_layers:
+  - [output_merged, 0, 0]
+keras_version: 1.1.0
