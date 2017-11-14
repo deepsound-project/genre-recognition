@@ -73,13 +73,15 @@ def extract_filters(model, data, filters_path, count0):
         for filter_index in xrange(argmax_over_track.shape[1]):
             print 'Processing layer', conv_layer_names[layer_index], \
                     'filter', filter_index
-            
+
             track_indices = argmax_over_track[:, filter_index]
             time_indices = argmax_over_time[track_indices, filter_index]
             sample_rate = [None]
 
+
             def extract_sample_from_track(undoer, (track_index, time_index)):
-                track_path = track_paths[track_index]    
+                track_path = track_paths[track_index]
+            //# TODO:  Location where we must replace the librosa
                 (track_samples, sample_rate[0]) = lbr.load(track_path,
                         mono=True)
                 (t1, t2) = undoer((time_index, time_index + 1))
@@ -91,6 +93,7 @@ def extract_filters(model, data, filters_path, count0):
 
             filter_path = os.path.join(layer_path,
                     '{}.wav'.format(filter_index))
+            //# TODO:  Location where we must replace the librosa
             lbr.output.write_wav(filter_path, samples_for_filter,
                     sample_rate[0])
 
