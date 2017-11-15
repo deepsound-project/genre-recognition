@@ -81,7 +81,7 @@ def extract_filters(model, data, filters_path, count0):
 
             def extract_sample_from_track(undoer, (track_index, time_index)):
                 track_path = track_paths[track_index]
-            //# TODO:  Location where we must replace the librosa
+            # TODO:  Location where we must replace the librosa
                 (track_samples, sample_rate[0]) = lbr.load(track_path,
                         mono=True)
                 (t1, t2) = undoer((time_index, time_index + 1))
@@ -93,7 +93,7 @@ def extract_filters(model, data, filters_path, count0):
 
             filter_path = os.path.join(layer_path,
                     '{}.wav'.format(filter_index))
-            //# TODO:  Location where we must replace the librosa
+            # TODO:  Location where we must replace the librosa
             lbr.output.write_wav(filter_path, samples_for_filter,
                     sample_rate[0])
 
