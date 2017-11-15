@@ -24,7 +24,8 @@ def get_layer_output_function(model, layer_name):
     return lambda x: f([x, 0]) # learning_phase = 0 means test
 
 def load_track(filename, enforce_shape=None):
-    //# TODO:  Location where we must replace the librosa
+
+    # TODO:  Location where we must replace the librosa
     new_input, sample_rate = lbr.load(filename, mono=True)
     features = lbr.feature.melspectrogram(new_input, **MEL_KWARGS).T
 
