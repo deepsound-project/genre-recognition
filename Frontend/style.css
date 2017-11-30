@@ -1,18 +1,38 @@
 body {
   font-family: Helvetica Neue, Arial, sans-serif;
   text-align: center;
+  background: #f5f5dc;
 }
+
 
 .wrapper {
   max-width: 90%;
   margin: 50px auto;
 }
 
+.guess{
+  size: 24px;
+
+}
+.dropzone{
+
+  max-width: 60%;
+  margin: 25px auto;
+  align-self: center;
+  border : "1px solid black";
+
+}
 .box{
-  max-width: 800px;
+  max-width: 80%;
+  max-height: 80%;
   margin: 25px auto;
 }
 
+.bottomBox{
+  max-width: 40%;
+  max-height: 40%;
+  margin: 25px auto;
+}
 .column {
     float: left;
     width: 50%;
