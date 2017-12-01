@@ -9,6 +9,8 @@ import keras.backend as K
 GENRES = ['international', 'blues', 'jazz', 'classical', 'old-time/historic', 'country', 'pop',
         'rock', 'easy listening', 'soul/rnb', 'electronic', 'folk' ,'spoken', 'hip-hop', 'experimental', 'instrumental']
 
+GENRE_IDS = [2, 3, 4, 5, 6, 8, 9, 10, 12, 13, 14, 15, 17, 20, 21, 38, 1235]
+
 NUMTRACKS = [5271, 1752, 4126, 4106, 868, 1987, 13845, 32923, 730, 1499, 34413, 12706, 1876, 8389, 38154, 14938]
 
 WINDOW_SIZE = 2048
@@ -28,7 +30,7 @@ def get_layer_output_function(model, layer_name):
     return lambda x: f([x, 0]) # learning_phase = 0 means test
 
 def load_track(filename, enforce_shape=None):
-
+    
     new_input, sample_rate = lbr.load(filename, mono=True)
     features = lbr.feature.melspectrogram(new_input, **MEL_KWARGS).T
 
