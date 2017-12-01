@@ -6,8 +6,9 @@ import numpy as np
 import librosa as lbr
 import keras.backend as K
 
-GENRES = ['blues', 'classical', 'country', 'disco', 'hiphop', 'jazz', 'metal',
-        'pop', 'reggae', 'rock']
+GENRES = ['international', 'blues', 'jazz', 'classical', 'old-time/historic', 'country', 'pop',
+        'rock', 'easy listening', 'soul/rnb', 'electronic', 'folk' ,'spoken', 'hip-hop', 'experimental', 'instrumental']
+
 WINDOW_SIZE = 2048
 WINDOW_STRIDE = WINDOW_SIZE // 2
 N_MELS = 128
@@ -25,7 +26,6 @@ def get_layer_output_function(model, layer_name):
 
 def load_track(filename, enforce_shape=None):
 
-    # TODO:  Location where we must replace the librosa
     new_input, sample_rate = lbr.load(filename, mono=True)
     features = lbr.feature.melspectrogram(new_input, **MEL_KWARGS).T
 
