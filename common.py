@@ -9,9 +9,12 @@ import keras.backend as K
 GENRES = ['international', 'blues', 'jazz', 'classical', 'old-time/historic', 'country', 'pop',
         'rock', 'easy listening', 'soul/rnb', 'electronic', 'folk' ,'spoken', 'hip-hop', 'experimental', 'instrumental']
 
+NUMTRACKS = [5271, 1752, 4126, 4106, 868, 1987, 13845, 32923, 730, 1499, 34413, 12706, 1876, 8389, 38154, 14938]
+
 WINDOW_SIZE = 2048
 WINDOW_STRIDE = WINDOW_SIZE // 2
 N_MELS = 128
+
 MEL_KWARGS = {
     'n_fft': WINDOW_SIZE,
     'hop_length': WINDOW_STRIDE,
