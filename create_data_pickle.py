@@ -9,14 +9,23 @@ import pandas as pd
 from optparse import OptionParser
 import librosa
 
+from progress.bar import Bar
+
 TRACK_COUNT = 1000
+
+MEL_KWARGS = {
+    'n_fft': 2048,
+    'hop_length': 2048//2,
+    #'n_mels': 128
+}
+
 
 def get_default_shape(dataset_path):
     tmp_features, _ = load_track(os.path.join(dataset_path,
         '000002.mp3'))
     return tmp_features.shape
 
-def collect_data(dataset_path):
+def collect_data(dataset_path, genre_num):
     '''
     Collects data from the GTZAN dataset into a pickle. Computes a Mel-scaled
     power spectrogram for each track.
@@ -27,16 +36,21 @@ def collect_data(dataset_path):
         track_paths is a dict of absolute track paths indexed by row indices in
         the x and y matrices
     '''
+    print genre_num
     
+    print [GENRE_IDS_STRS[genre_num]]
+
     tracks = pd.read_csv('data/track_to_genre.csv');
     tracks = tracks[np.isfinite(tracks['genre_id'])]
 
-    reduced_tracks = tracks[~tracks['genre_id'].isin(GENRE_IDS_STRS)]
+    print len(tracks)
 
-    num_tracks = len(tracks)
-    #default_shape = get_default_shape(dataset_path)
-    #x = np.zeros((num_tracks,) + default_shape, dtype=np.float32)
-    y = np.zeros((num_tracks, len(GENRES)), dtype=np.float32)
+    reduced_tracks = tracks.loc[tracks['genre_id'] == GENRE_IDS[genre_num]]
+    print len(reduced_tracks)
+    num_tracks = len(reduced_tracks)
+    default_shape = get_default_shape(dataset_path)
+    x = np.zeros((num_tracks,) + default_shape, dtype=np.float32)
+    y = np.zeros((num_tracks, len(GENRE_IDS)), dtype=np.float32)
     track_paths = {}
 
     #print(tracks)
@@ -48,6 +62,9 @@ def collect_data(dataset_path):
     curr_genre = None
     song_ID = ""
     i = 0
+
+    bar = Bar('Progress:', max=len(reduced_tracks))
+
     for row in reduced_tracks.iterrows():
         #print "Processing Row : " , row
         genre =  int(row[1]['genre_id'])
@@ -58,26 +75,49 @@ def collect_data(dataset_path):
         z = str(song_ID).zfill(6) 
         
         file_name = z+".mp3"
+        #file_name = "132567.mp3"
 
         path = os.path.join(dataset_path, file_name)
 
         if os.path.isfile(path):
-            track_index = curr_genre  * (num_tracks // len(GENRES)) + i
-
+            track_index = i#curr_genre  * (num_tracks // len(GENRES)) + i
+            genre_index = GENRE_IDS.index(curr_genre)
+            #print curr_genre, "genre_index:", genre_index
             try:
-                x, sample_rate = librosa.load(path, sr=None, mono=True)#load_track(path, default_shape)
+                d, sample_rate = librosa.load(path, sr=None, mono=True)#load_track(path, default_shape)
                 
 
-                stft = np.abs(librosa.stft(x, n_fft=2048,  hop_length=512))
-                mel = librosa.feature.melspectrogram(sr=sample_rate, S=stft**2)
-                log_mel = librosa.logamplitude(mel)
+                #stft = np.abs(librosa.stft(x, n_fft=2048,  hop_length=512))
+                #mel = librosa.feature.melspectrogram(sr=sample_rate, S=stft**2).T
+                #log_mel = librosa.logamplitude(mel)
 
-                y[track_index, curr_genre] = 1
+                features = librosa.feature.melspectrogram(d, **MEL_KWARGS).T
+                
+
+                if features.shape[0] < default_shape[0]:
+                    delta_shape = (default_shape[0] - features.shape[0],
+                            default_shape[1])
+                    features = np.append(features, np.zeros(delta_shape), axis=0)
+                elif features.shape[0] > default_shape[0]:
+                    features = features[: default_shape[0], :]
+
+                features[features == 0] = 1e-6
+                features = np.log(features)
+
+                x[track_index] = features
+                y[track_index, genre_index] = 1
+                
+                #print y[track_index]
                 track_paths[track_index] = os.path.abspath(path)
                 i += 1
-            except:
+            except Exception, e:
                 print "Corrupted File at" + path
-            
+                print e
+        bar.next()
+        
+
+    bar.finish()
+
     return (x, y, track_paths)
     '''
         file_name = z+".mp3"
@@ -136,12 +176,12 @@ if __name__ == '__main__':
             default=os.path.join(os.path.dirname(__file__), '/Users/Andrew/Downloads/fma'),
             help='path to the GTZAN dataset directory', metavar='DATASET_PATH')
     parser.add_option('-o', '--output_pkl_path', dest='output_pkl_path',
-            default=os.path.join(os.path.dirname(__file__), 'data/data.pkl'),
+            default=os.path.join(os.path.dirname(__file__), '/Volumes/G-DRIVE mob/pickled_spect/data.pkl'),
             help='path to the output pickle', metavar='OUTPUT_PKL_PATH')
     options, args = parser.parse_args()
 
 
-    (x, y, track_paths) = collect_data(options.dataset_path)
+    (x, y, track_paths) = collect_data(options.dataset_path, int(sys.argv[1]))
 
     data = {'x': x, 'y': y, 'track_paths': track_paths}
     #print(data)
