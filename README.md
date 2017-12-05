@@ -1,16 +1,15 @@
 CRNN for Live Music Genre Recognition
 =====================================
 
-Convolutional-Recurrent Neural Networks for Live Music Genre Recognition is a project aimed at creating a neural network recognizing music genre and providing a user-friendly visualization for the network's current belief of the genre of a song. The project was created for the 24-hour Braincode Hackathon in Warsaw by Piotr Kozakowski, Jakub Królak, Łukasz Margas and Bartosz Michalak.
+Convolutional-Recurrent Neural Networks for Live Music Genre Recognition is a project aimed at creating a neural network recognizing music genre and providing a user-friendly visualization for the network's current belief of the genre of a song.
 
-This project uses Keras for the neural network and Tornado for serving requests.
+This project uses Keras for the neural network and Tornado for serving requests, but will be ported over to TensorFlow.
 
 
 Demo
 ----
 
-You can see a demo for a few selected songs here: [Demo](http://deepsound.io/genres/).
-
+TODO
 
 Usage
 -----
@@ -48,4 +47,4 @@ You can "visualize" the filters learned by the convolutional layers using extrac
 Background
 ----------
 
-The rationale for this particular model is based on several works, primarily [Grzegorz Gwardys and Daniel Grzywczak, Deep Image Features in Music Information Retrieval](http://ijet.pl/index.php/ijet/article/view/10.2478-eletel-2014-0042/53) and [Recommending music on Spotify with Deep Learning](http://benanne.github.io/2014/08/05/spotify-cnns.html). The whole idea is extensively described in our blog post [Convolutional-Recurrent Neural Network for Live Music Genre Recognition](http://deepsound.io/music_genre_recognition.html).  
+The rationale for this particular model is based on several works, primarily [Grzegorz Gwardys and Daniel Grzywczak, Deep Image Features in Music Information Retrieval](http://ijet.pl/index.php/ijet/article/view/10.2478-eletel-2014-0042/53), [Recommending music on Spotify with Deep Learning](http://benanne.github.io/2014/08/05/spotify-cnns.html), and [Convolutional-Recurrent Neural Network for Live Music Genre Recognition](http://deepsound.io/music_genre_recognition.html).  
