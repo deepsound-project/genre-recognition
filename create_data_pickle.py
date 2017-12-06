@@ -49,6 +49,7 @@ def collect_data(dataset_path, genre_num):
     print len(reduced_tracks)
     num_tracks = len(reduced_tracks)
     default_shape = get_default_shape(dataset_path)
+    print "default:",default_shape
     x = np.zeros((num_tracks,) + default_shape, dtype=np.float32)
     y = np.zeros((num_tracks, len(GENRE_IDS)), dtype=np.float32)
     track_paths = {}
@@ -176,7 +177,7 @@ if __name__ == '__main__':
             default=os.path.join(os.path.dirname(__file__), '/Users/Andrew/Downloads/fma'),
             help='path to the GTZAN dataset directory', metavar='DATASET_PATH')
     parser.add_option('-o', '--output_pkl_path', dest='output_pkl_path',
-            default=os.path.join(os.path.dirname(__file__), '/Volumes/G-DRIVE mob/pickled_spect/data.pkl'),
+            default=os.path.join(os.path.dirname(__file__), 'data/data.pkl'), #/Volumes/G-DRIVE mob/pickled_spect/data.pkl
             help='path to the output pickle', metavar='OUTPUT_PKL_PATH')
     options, args = parser.parse_args()
 
