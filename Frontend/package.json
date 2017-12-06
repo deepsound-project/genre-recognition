@@ -1,0 +1,19 @@
+{
+  "name": "00startingpoint",
+  "version": "1.0.0",
+  "main": "script.js",
+  "scripts": {
+    "start": "npm run"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "dropzone": "^5.2.0"
+  },
+  "devDependencies": {
+    "concurrently": "^3.5.1",
+    "http-server": "^0.10.0"
+  }
+}

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>World population</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+  <body>
+    <div class="wrapper">
+      <h1>CNN Music Recognition</h1>
+      <h2>By Ribhi El-Zaru, Andrew Heimerman, Nick Loeper and Evan Otero </h2>
+
+      <div id = "homeDisplay">
+        <center>
+          <form action="UploadSong" class="dropzone" id="myDropzone" enctype="multipart/form-data">
+              <div class="dz-message" data-dz-message>
+                <span id="dropZoneMessage">Drop an mp3 song file here to analyze its genre!</span>
+              </div>
+            </form>
+        </center>
+        <div id = "button">
+          <button id = "startButton">
+            Analyze Song
+          </button>
+        </div>
+
+      </div>
+    </div>
+    <div id = "guessDisplay" style = "display:none;">
+      <span id = "guess" > <font id = "guessFont" color = "#5B9C64" size = "6"> More time Necessary </font> </span>
+
+    </div>
+    <div id = "dataDisplay" style = "display:none;">
+          <div class="row">
+            <div  class="bottomBox" >
+              <canvas id="chart3" ></canvas>
+            </div>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="box">
+                <canvas id="chart1" ></canvas>
+              </div>
+            </div>
+            <div class="column">
+              <div  class="box">
+                <canvas id="chart2" ></canvas>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+  </body>
+  <script src="script.js"></script>
+  <link rel="stylesheet" href="./node_modules/dropzone/dist/dropzone.css">
+  <script src="./node_modules/dropzone/dist/dropzone.js"></script>
+
+</html>
