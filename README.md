@@ -50,7 +50,7 @@ Optional model
 An optional model can be trained based on: http://benanne.github.io/2014/08/05/spotify-cnns.html. This can be done by setting model_choice parameter of train_model.py to 2. 
 
 ```shell
-python train_model.py 
+python train_model.py -c 2 
 
 ```
 
