@@ -46,8 +46,9 @@ You can "visualize" the filters learned by the convolutional layers using extrac
 
 Optional model
 -----
+**Please note: This model is incompatible with the visualizations as this outputs a single probability distribution. Please use this only for training and validaiton purposes.**
 
-An optional model can be trained based on: http://benanne.github.io/2014/08/05/spotify-cnns.html. This can be done by setting model_choice parameter of train_model.py to 2. 
+An optional model can be trained based on: http://benanne.github.io/2014/08/05/spotify-cnns.html. This model reached an accuracy of 83% on the validation data. The model can be selected by setting the model_choice parameter of train_model.py to 2. 
 
 ```shell
 python train_model.py -c 2 
