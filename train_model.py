@@ -7,10 +7,10 @@ from common import GENRES
 from keras.callbacks import Callback
 from keras.utils import np_utils
 from keras.models import Model
-from keras.optimizers import RMSprop
+from keras.optimizers import RMSprop,Adam
 from keras import backend as K
 from keras.layers import Input, Dense, Lambda, Dropout, Activation, LSTM, \
-        TimeDistributed, Convolution1D, MaxPooling1D
+        TimeDistributed, Convolution1D, MaxPooling1D,Conv1D,AveragePooling1D, Flatten,GlobalAveragePooling1D,GlobalMaxPooling1D,concatenate
 from sklearn.model_selection import train_test_split
 import numpy as np
 import cPickle
@@ -73,6 +73,34 @@ def train_model(data):
 
     return model
 
+def train_model_spotify(data):
+    '''Model implemented for genre recognition by Nikhil George Titus based on http://benanne.github.io/2014/08/05/spotify-cnns.html'''
+    x = data['x']
+    y = data['y']
+    (x_train, x_val, y_train, y_val) = train_test_split(x, y,stratify=y, test_size=0.2,random_state=SEED)
+
+    print 'Building model...'
+
+    input_shape = (x_train.shape[1], x_train.shape[2])
+    print input_shape
+    model_input = Input(shape=input_shape)
+    layer = model_input
+    for i in range(3):
+        layer = Conv1D(filters=256, kernel_size=4,strides=2)(layer)
+        layer = Activation('relu')(layer)
+        layer = MaxPooling1D(2)(layer)
+    averagePool = GlobalAveragePooling1D()(layer)
+    maxPool = GlobalMaxPooling1D()(layer)
+    layer = concatenate([averagePool, maxPool])
+    layer = Dropout(rate=0.5)(layer)
+    layer = Dense(units=len(GENRES))(layer)
+    model_output = Activation('softmax')(layer)
+    model = Model(model_input, model_output)
+    opt = Adam()
+    model.compile(loss='categorical_crossentropy',optimizer=opt,metrics=['accuracy'])
+    model.fit(x_train, y_train,batch_size=BATCH_SIZE,epochs=80,validation_data=(x_val, y_val),verbose=1)
+    return model
+
 if __name__ == '__main__':
     parser = OptionParser()
     parser.add_option('-d', '--data_path', dest='data_path',
@@ -88,12 +116,19 @@ if __name__ == '__main__':
                 'models/weights.h5'),
             help='path to the output model weights hdf5 file',
             metavar='WEIGHTS_PATH')
+    parser.add_option('-c', '--model_choice', dest='model_choice',
+            default=1,
+            help='Model choice: 1 for LSTM and 2 for fully connected model based on http://benanne.github.io/2014/08/05/spotify-cnns.html',
+            metavar='WEIGHTS_PATH')
     options, args = parser.parse_args()
 
     with open(options.data_path, 'r') as f:
         data = cPickle.load(f)
 
-    model = train_model(data)
+    if options.model_choice == 1:
+        model = train_model(data)
+    else:
+        model=train_model_spotify(data)
 
     with open(options.model_path, 'w') as f:
         f.write(model.to_yaml())
