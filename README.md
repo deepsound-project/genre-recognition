@@ -44,6 +44,15 @@ THEANO_FLAGS=mode=FAST_RUN,device=gpu,floatX=float32 python train_model.py
 
 You can "visualize" the filters learned by the convolutional layers using extract\_filters.py. This script for each convolutional neuron extracts and concatenates a few chunks resulting in maximum activation of this neuron from the tracks from the dataset. By default, it will put the visualizations in the filters/ directory. It requires the GTZAN dataset and its pickled version in the data/ directory. Run the commands above to obtain them. You can control the number of extracted chunks using the --count0 argument. Extracting higher number of chunks will be slower.
 
+Optional model
+-----
+
+An optional model can be trained based on: http://benanne.github.io/2014/08/05/spotify-cnns.html. This can be done by setting model_choice parameter of train_model.py to 2. 
+
+```shell
+python train_model.py 
+
+```
 
 Background
 ----------

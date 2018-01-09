@@ -119,7 +119,7 @@ if __name__ == '__main__':
     parser.add_option('-c', '--model_choice', dest='model_choice',
             default=1,
             help='Model choice: 1 for LSTM and 2 for fully connected model based on http://benanne.github.io/2014/08/05/spotify-cnns.html',
-            metavar='WEIGHTS_PATH')
+            metavar='MODEL_CHOICE')
     options, args = parser.parse_args()
 
     with open(options.data_path, 'r') as f:
@@ -128,6 +128,7 @@ if __name__ == '__main__':
     if options.model_choice == 1:
         model = train_model(data)
     else:
+        print 'Model 2 being used'
         model=train_model_spotify(data)
 
     with open(options.model_path, 'w') as f:
