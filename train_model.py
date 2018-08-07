@@ -4,16 +4,15 @@ THEANO_FLAGS=mode=FAST_RUN,device=gpu,floatX=float32 python train_model.py
 '''
 
 from common import GENRES
-from keras.callbacks import Callback
-from keras.utils import np_utils
-from keras.models import Model
-from keras.optimizers import RMSprop
-from keras import backend as K
-from keras.layers import Input, Dense, Lambda, Dropout, Activation, LSTM, \
+from tensorflow.keras.callbacks import Callback
+from tensorflow.keras.models import Model
+from tensorflow.keras.optimizers import RMSprop
+from tensorflow.keras import backend as K
+from tensorflow.keras.layers import Input, Dense, Lambda, Dropout, Activation, LSTM, \
         TimeDistributed, Convolution1D, MaxPooling1D
 from sklearn.model_selection import train_test_split
 import numpy as np
-import cPickle
+import pickle
 from optparse import OptionParser
 from sys import stderr, argv
 import os
@@ -32,7 +31,7 @@ def train_model(data):
     (x_train, x_val, y_train, y_val) = train_test_split(x, y, test_size=0.3,
             random_state=SEED)
 
-    print 'Building model...'
+    print('Building model...')
 
     n_features = x_train.shape[2]
     input_shape = (None, n_features)
@@ -41,8 +40,8 @@ def train_model(data):
     for i in range(N_LAYERS):
         # convolutional layer names are used by extract_filters.py
         layer = Convolution1D(
-                nb_filter=CONV_FILTER_COUNT,
-                filter_length=FILTER_LENGTH,
+                filters=CONV_FILTER_COUNT,
+                kernel_size=FILTER_LENGTH,
                 name='convolution_' + str(i + 1)
             )(layer)
         layer = Activation('relu')(layer)
@@ -67,7 +66,7 @@ def train_model(data):
             metrics=['accuracy']
         )
 
-    print 'Training...'
+    print('Training...')
     model.fit(x_train, y_train, batch_size=BATCH_SIZE, nb_epoch=EPOCH_COUNT,
               validation_data=(x_val, y_val), verbose=1)
 
@@ -90,8 +89,8 @@ if __name__ == '__main__':
             metavar='WEIGHTS_PATH')
     options, args = parser.parse_args()
 
-    with open(options.data_path, 'r') as f:
-        data = cPickle.load(f)
+    with open(options.data_path, 'rb') as f:
+        data = pickle.load(f)
 
     model = train_model(data)
 

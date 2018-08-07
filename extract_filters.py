@@ -1,5 +1,5 @@
 from common import get_layer_output_function, WINDOW_SIZE, WINDOW_STRIDE
-from keras.models import model_from_yaml
+from tensorflow.keras.models import model_from_yaml
 import librosa as lbr
 import numpy as np
 from functools import partial
@@ -56,7 +56,7 @@ def extract_filters(model, data, filters_path, count0):
         if not os.path.exists(layer_path):
             os.makedirs(layer_path)
 
-        print 'Computing outputs for layer', conv_layer_names[layer_index]
+        print('Computing outputs for layer', conv_layer_names[layer_index])
         output = output_fun(x)
 
         # matrices of shape n_tracks x time x n_filters
@@ -70,9 +70,9 @@ def extract_filters(model, data, filters_path, count0):
 
         undoer = conv_layer_undoers[layer_index]
 
-        for filter_index in xrange(argmax_over_track.shape[1]):
-            print 'Processing layer', conv_layer_names[layer_index], \
-                    'filter', filter_index
+        for filter_index in range(argmax_over_track.shape[1]):
+            print('Processing layer', conv_layer_names[layer_index], \
+                    'filter', filter_index)
             
             track_indices = argmax_over_track[:, filter_index]
             time_indices = argmax_over_time[track_indices, filter_index]

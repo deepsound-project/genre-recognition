@@ -4,7 +4,7 @@ matplotlib.use('Agg')
 
 import numpy as np
 import librosa as lbr
-import keras.backend as K
+import tensorflow.keras.backend as K
 
 GENRES = ['blues', 'classical', 'country', 'disco', 'hiphop', 'jazz', 'metal',
         'pop', 'reggae', 'rock']
@@ -20,8 +20,8 @@ MEL_KWARGS = {
 def get_layer_output_function(model, layer_name):
     input = model.get_layer('input').input
     output = model.get_layer(layer_name).output
-    f = K.function([input, K.learning_phase()], output)
-    return lambda x: f([x, 0]) # learning_phase = 0 means test
+    f = K.function([input, K.learning_phase()], [output])
+    return lambda x: f([x, 0])[0] # learning_phase = 0 means test
 
 def load_track(filename, enforce_shape=None):
     new_input, sample_rate = lbr.load(filename, mono=True)

@@ -39,7 +39,7 @@ class UploadHandler(tornado.web.RequestHandler):
             os.makedirs(UPLOADS_PATH)
 
         uploaded_path = os.path.join(UPLOADS_PATH, uploaded_name)
-        with open(uploaded_path, 'w') as f:
+        with open(uploaded_path, 'wb') as f:
             f.write(file_info['body'])
         (predictions, duration) = genre_recognizer.recognize(
                 uploaded_path)
@@ -64,7 +64,7 @@ class UploadHandler(tornado.web.RequestHandler):
                     for (genre_index, genre_name) in enumerate(GENRES)}
 
         return [((step + 1) * delta_t, get_genre_distribution(step))
-                for step in xrange(n_steps)]
+                for step in range(n_steps)]
 
 application = tornado.web.Application([
     (r'/', MainHandler),
