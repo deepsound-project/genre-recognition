@@ -24,12 +24,18 @@ pip install -r requirements.txt
 to install all the prerequisites. Run: 
 
 ```shell
-THEANO_FLAGS=mode=FAST_RUN,device=gpu,floatX=float32 python server.py  
+python server.py
 ```
 
-to run the server at http://0.0.0.0:8080/  
+to launch the server.
 
-Then you can upload a song using the big (and only) button and see the results for yourself. All mp3 files should work fine.  
+You can also use Docker Compose:
+
+```shell
+docker-compose up
+```
+
+The demo will be accessible at http://0.0.0.0:8080/. You can upload a song using the big (and only) button and see the results for yourself. All mp3 files should work fine.  
 
 Running server.py without additional parameters launches the server using a default model provided in the package. You can provide your own model, as long as it matches the input and output architecture of the provided model. You can train your own model by modifying and running train\_model.py. If you wish to train a model by yourself, download the [GTZAN dataset](http://opihi.cs.uvic.ca/sound/genres.tar.gz) (or provide analogous) to the data/ directory, extract it, run create\_data\_pickle.py to preprocess the data and then run train\_model.py to train the model:
 
@@ -39,7 +45,7 @@ wget http://opihi.cs.uvic.ca/sound/genres.tar.gz
 tar zxvf genres.tar.gz
 cd ..
 python create_data_pickle.py
-THEANO_FLAGS=mode=FAST_RUN,device=gpu,floatX=float32 python train_model.py
+python train_model.py
 ```
 
 You can "visualize" the filters learned by the convolutional layers using extract\_filters.py. This script for each convolutional neuron extracts and concatenates a few chunks resulting in maximum activation of this neuron from the tracks from the dataset. By default, it will put the visualizations in the filters/ directory. It requires the GTZAN dataset and its pickled version in the data/ directory. Run the commands above to obtain them. You can control the number of extracted chunks using the --count0 argument. Extracting higher number of chunks will be slower.
