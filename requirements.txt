@@ -1,7 +1,8 @@
-h5py==2.6.0
-Keras==1.1.0
-librosa==0.4.1
-numpy==1.10.1
-pyyaml==3.12
-scipy==0.17.0
-tornado==4.3
+h5py==2.8.0
+librosa==0.6.1
+matplotlib
+numpy
+PyYAML==3.13
+scipy
+tensorflow==1.9.0
+tornado==5.0.2
