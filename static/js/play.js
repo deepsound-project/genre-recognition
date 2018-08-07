@@ -26,10 +26,9 @@ function drawPieChart(canvasID, distribution, timeFn) {
         var i = lowerBound(distribution, timeFn(), function(x) {
             return x[0];
         });
-        for(var j = 0; j < 10; j++) {
-            chart.segments[j].value =
-                parseFloat(distribution[i][1][GENRES[j]]);
-        }
+        GENRES.forEach(function(genre, index) {
+            chart.segments[index].value = parseFloat(distribution[i][1][genre]);
+        });
         chart.update();
         setTimeout(updateChart, 100);
     }
