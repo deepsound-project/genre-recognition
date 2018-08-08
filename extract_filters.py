@@ -1,5 +1,5 @@
 from common import get_layer_output_function, WINDOW_SIZE, WINDOW_STRIDE
-from tensorflow.keras.models import model_from_yaml
+from tensorflow.keras.models import load_model
 import librosa as lbr
 import numpy as np
 from functools import partial
@@ -103,13 +103,8 @@ if __name__ == '__main__':
     parser = OptionParser()
     parser.add_option('-m', '--model_path', dest='model_path',
             default=os.path.join(os.path.dirname(__file__),
-                'models/model.yaml'),
-            help='path to the model YAML file', metavar='MODEL_PATH')
-    parser.add_option('-w', '--weights_path', dest='weights_path',
-            default=os.path.join(os.path.dirname(__file__),
-                'models/weights.h5'),
-            help='path to the model weights hdf5 file',
-            metavar='WEIGHTS_PATH')
+                'models/model.h5'),
+            help='path to the model HDF5 file', metavar='MODEL_PATH')
     parser.add_option('-d', '--data_path', dest='data_path',
             default=os.path.join(os.path.dirname(__file__),
                 'data/data.pkl'),
@@ -127,9 +122,7 @@ if __name__ == '__main__':
             metavar='COUNT0')
     options, args = parser.parse_args()
 
-    with open(options.model_path, 'r') as f:
-        model = model_from_yaml(f.read())
-    model.load_weights(options.weights_path)
+    model = load_model(options.model_path)
 
     with open(options.data_path, 'rb') as f:
         data = pickle.load(f)

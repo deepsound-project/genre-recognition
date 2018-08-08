@@ -1,8 +1,3 @@
-'''
-GPU command:
-THEANO_FLAGS=mode=FAST_RUN,device=gpu,floatX=float32 python train_model.py
-'''
-
 from common import GENRES
 from tensorflow.keras.callbacks import Callback
 from tensorflow.keras.models import Model
@@ -80,13 +75,8 @@ if __name__ == '__main__':
             help='path to the data pickle', metavar='DATA_PATH')
     parser.add_option('-m', '--model_path', dest='model_path',
             default=os.path.join(os.path.dirname(__file__),
-                'models/model.yaml'),
-            help='path to the output model YAML file', metavar='MODEL_PATH')
-    parser.add_option('-w', '--weights_path', dest='weights_path',
-            default=os.path.join(os.path.dirname(__file__),
-                'models/weights.h5'),
-            help='path to the output model weights hdf5 file',
-            metavar='WEIGHTS_PATH')
+                'models/model.h5'),
+            help='path to the output model HDF5 file', metavar='MODEL_PATH')
     options, args = parser.parse_args()
 
     with open(options.data_path, 'rb') as f:

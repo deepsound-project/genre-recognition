@@ -1,15 +1,13 @@
 from common import load_track, get_layer_output_function
 import numpy as np
 from tensorflow.keras.layers import Input
-from tensorflow.keras.models import model_from_yaml, Model
+from tensorflow.keras.models import Model, load_model
 from tensorflow.keras import backend as K
 
-class GenreRecognizer():
+class GenreRecognizer:
 
-    def __init__(self, model_path, weights_path):
-        with open(model_path, 'r') as f:
-            model = model_from_yaml(f.read())
-        model.load_weights(weights_path)
+    def __init__(self, model_path):
+        model = load_model(model_path)
         self.pred_fun = get_layer_output_function(model, 'output_realtime')
         print('Loaded model.')
     

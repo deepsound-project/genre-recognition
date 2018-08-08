@@ -82,17 +82,12 @@ if __name__ == '__main__':
     parser = OptionParser()
     parser.add_option('-m', '--model', dest='model_path',
             default=os.path.join(os.path.dirname(__file__), 
-                'models/model.yaml'),
+                'models/model.h5'),
             help='load keras model from MODEL yaml file', metavar='MODEL')
-    parser.add_option('-w', '--weights', dest='weights_path',
-            default=os.path.join(os.path.dirname(__file__), 
-                        'models/weights.h5'),
-            help='load keras model WEIGHTS hdf5 file', metavar='WEIGHTS')
     parser.add_option('-p', '--port', dest='port',
             default=8080,
             help='run server at PORT', metavar='PORT')
     options, args = parser.parse_args()
-    genre_recognizer = GenreRecognizer(options.model_path,
-            options.weights_path)
+    genre_recognizer = GenreRecognizer(options.model_path)
     application.listen(options.port)
     tornado.ioloop.IOLoop.instance().start()
