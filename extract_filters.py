@@ -4,13 +4,14 @@ import librosa as lbr
 import numpy as np
 from functools import partial
 from optparse import OptionParser
-import cPickle
+import pickle
 import os
 
 def compose(f, g):
     return lambda x: f(g(x))
 
-def undo_layer(length, stride, (i, j)):
+def undo_layer(length, stride, coords):
+    (i, j) = coords
     return (stride * i, stride * (j - 1) + length)
 
 def extract_filters(model, data, filters_path, count0):
@@ -21,7 +22,9 @@ def extract_filters(model, data, filters_path, count0):
     i = 1
     while True:
         name = 'convolution_' + str(i)
-        if model.get_layer(name) is None:
+        try:
+            model.get_layer(name)
+        except ValueError:
             break
         conv_layer_names.append(name)
         i += 1
@@ -37,8 +40,8 @@ def extract_filters(model, data, filters_path, count0):
 
     for name in conv_layer_names:
         layer = model.get_layer(name)
-        length = layer.filter_length
-        stride = layer.subsample_length
+        length = layer.kernel_size
+        stride = layer.strides
 
         # undo the convolution layer
         undoer = compose(partial(undo_layer, length, stride), undoer)
@@ -46,8 +49,9 @@ def extract_filters(model, data, filters_path, count0):
 
         # undo the pooling layer
         undoer = compose(partial(undo_layer, 2, 2), undoer)
-        conv_layer_output_funs = \
-        map(partial(get_layer_output_function, model), conv_layer_names)
+        conv_layer_output_funs = list(
+                map(partial(get_layer_output_function, model), conv_layer_names)
+            )
 
     # Extract track chunks with highest activations for each filter in each
     # convolutional layer.
@@ -78,7 +82,8 @@ def extract_filters(model, data, filters_path, count0):
             time_indices = argmax_over_time[track_indices, filter_index]
             sample_rate = [None]
 
-            def extract_sample_from_track(undoer, (track_index, time_index)):
+            def extract_sample_from_track(undoer, indexes):
+                (track_index, time_index) = indexes
                 track_path = track_paths[track_index]    
                 (track_samples, sample_rate[0]) = lbr.load(track_path,
                         mono=True)
@@ -86,8 +91,8 @@ def extract_filters(model, data, filters_path, count0):
                 return track_samples[t1 : t2]
 
             samples_for_filter = np.concatenate(
-                    map(partial(extract_sample_from_track, undoer),
-                            zip(track_indices, time_indices)))
+                    list(map(partial(extract_sample_from_track, undoer),
+                            zip(track_indices, time_indices))))
 
             filter_path = os.path.join(layer_path,
                     '{}.wav'.format(filter_index))
@@ -126,7 +131,7 @@ if __name__ == '__main__':
         model = model_from_yaml(f.read())
     model.load_weights(options.weights_path)
 
-    with open(options.data_path, 'r') as f:
-        data = cPickle.load(f)
+    with open(options.data_path, 'rb') as f:
+        data = pickle.load(f)
 
     extract_filters(model, data, options.filters_path, int(options.count0))
