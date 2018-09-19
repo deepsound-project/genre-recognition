@@ -11,4 +11,4 @@ var GENRE_TO_COLOR = new Map([
     ['rock', '#cc0000']
 ]);
 
-var GENRES = Object.keys(GENRE_TO_COLOR);
+var GENRES = Array.from(GENRE_TO_COLOR.keys());

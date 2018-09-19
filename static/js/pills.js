@@ -30,7 +30,7 @@ SOFTWARE.
   @see http://goo.gl/6WLx1
  */
 
-pills = function(mp3Path, distribution) {
+pills = function(audio, distribution) {
     var COLOR_STEP = 25;
     var NUM_PARTICLES = 150;
     var NUM_PILLS_PER_GENRE = 20;
@@ -202,7 +202,7 @@ pills = function(mp3Path, distribution) {
             }
             if (AudioAnalyser.enabled) {
                 try {
-                    analyser = new AudioAnalyser(mp3Path, NUM_BANDS, SMOOTHING);
+                    analyser = new AudioAnalyser(audio, NUM_BANDS, SMOOTHING);
                     analyser.onUpdate = (function(_this) {
                         return function(bands) {
                             var k, len, ref1, results, distribution;
@@ -224,7 +224,7 @@ pills = function(mp3Path, distribution) {
                             results = [];
                             for (k = 0, len = ref1.length; k < len; k++) {
                                 particle = ref1[k];
-                                particle.target_color = GENRE_TO_COLOR[maxProbIndex];
+                                particle.target_color = GENRE_TO_COLOR.get(maxProbIndex);
                                 particle.transit_color();
                                 results.push(particle.energy = bands[particle.band] / 256);
                             }
