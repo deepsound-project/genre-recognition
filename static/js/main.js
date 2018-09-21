@@ -25,17 +25,17 @@ function specToInputTensor(spec) {
     return tf.tensor3d(flatSpec, [1, width, height]);
 }
 
-function preprocess(file) {
+function preprocess(data) {
     return new Promise(function(resolve, reject) {
         worker.onmessage = async function(event) {
             resolve(event.data);
         };
-        worker.postMessage(file);
+        worker.postMessage(data);
     });
 }
 
-async function process(file) {
-    const spec = await preprocess(file);
+async function process(audio, sampleRate) {
+    const spec = await preprocess([audio, sampleRate]);
     const input = specToInputTensor(event.data);
     const model = await modelPromise;
     const predictionTensor = tf.tidy(function() {
@@ -70,6 +70,7 @@ function drawPieChart(canvasID, distribution, timeFn) {
         var i = lowerBound(distribution, timeFn(), function(x) {
             return x[0];
         });
+        i = min(i, distribution.length - 1);
         GENRES.forEach(function(genre, index) {
             chart.segments[index].value = parseFloat(
                 distribution[i][1][genre]
@@ -81,16 +82,22 @@ function drawPieChart(canvasID, distribution, timeFn) {
     updateChart();
 }
 
-function createAudioElement(file) {
-    const fileSrc = URL.createObjectURL(file);
-    const audio = new Audio(fileSrc);
-    audio.crossOrigin = "anonymous";
-    audio.controls = true;
-    return audio;
+function decodeAudio(file) {
+    return new Promise(function(resolve, reject) {
+        const reader = new FileReader();
+        reader.onload = async function(event) {
+            const buffer = event.target.result;
+            const context = new AudioContext();
+            const decoded = await context.decodeAudioData(buffer);
+            resolve(decoded);
+        }
+        reader.onerror = reject;
+        reader.readAsArrayBuffer(file);
+    });
 }
 
 function genreDistributionOverTime(prediction, duration) {
-    const dt = (duration + 0.001) / prediction.length * GENRES.length;
+    const dt = duration / prediction.length * GENRES.length;
     var distribution = [];
     for(var i = 0; i < prediction.length / GENRES.length; ++i) {
         const from = i * GENRES.length;
@@ -106,7 +113,6 @@ function genreDistributionOverTime(prediction, duration) {
 }
 
 async function sendForm() {
-    // SAMPLE RATE!!!
     var wave = new SiriWave({
         width: window.innerWidth,
         height: window.innerHeight / 2,
@@ -125,17 +131,18 @@ async function sendForm() {
         $('body').addClass('loading');
 
         const file = $('#upload input')[0].files[0];
-        process(file).then(function(prediction) {
-            wave.stop();
-            $('body').removeClass('loading');
-            $('.logo-big').removeClass('logo-big').addClass('logo-small');
+        decodeAudio(file).then(function(audioBuffer) {
+            const duration = audioBuffer.duration;
+            const channel = audioBuffer.getChannelData(0);
+            process(channel, audioBuffer.sampleRate).then(function(prediction) {
+                wave.stop();
+                $('body').removeClass('loading');
+                $('.logo-big').removeClass('logo-big').addClass('logo-small');
 
-            const audio = createAudioElement(file);
-            $(audio).on("loadedmetadata", function() {
                 const distribution = genreDistributionOverTime(
-                    prediction, audio.duration
+                    prediction, duration
                 );
-                pills(audio, distribution);
+                pills(URL.createObjectURL(file), distribution);
                 drawPieChart('#piechart', distribution, function() {
                     return $('audio').get(0).currentTime;
                 });
@@ -143,9 +150,6 @@ async function sendForm() {
             });
         });
     });
-
-    // window.location.href = window.location.href.replace(/[^\/]*$/,
-            // 'play.html#' + JSON.parse(data));
 }
 
 $(function() {
