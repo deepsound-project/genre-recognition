@@ -2,9 +2,9 @@
 
 (function() {
 
-var worker = new Worker('static/js/worker.js');
+var worker = new Worker('js/worker.js');
 
-const modelPromise = tf.loadModel('static/model/model.json');
+const modelPromise = tf.loadModel('model/model.json');
 
 function getRandColor(brightness) {
     var rgb = [Math.random() * 256, Math.random() * 256, Math.random() * 256];
