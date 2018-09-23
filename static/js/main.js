@@ -34,6 +34,25 @@ function preprocess(data) {
     });
 }
 
+function smooth(prediction) {
+    const weights = [
+        0.11, 0.13, 0.17, 0.21, 0.26, 0.33, 0.41, 0.51, 0.64, 0.8, 1
+    ];
+    var newPrediction = new Float32Array(prediction.length);
+    for(var i = 0; i < prediction.length; ++i) {
+        var totalWeight = 0;
+        for(var j = 0; j < weights.length; ++j) {
+            const k = i + (j - weights.length + 1) * 10;
+            if(k >= 0 && k < prediction.length) {
+                newPrediction[i] += weights[j] * prediction[k];
+                totalWeight += weights[j];
+            }
+        }
+        newPrediction[i] /= totalWeight;
+    }
+    return newPrediction;
+}
+
 async function process(audio, sampleRate) {
     const spec = await preprocess([audio, sampleRate]);
     const input = specToInputTensor(event.data);
@@ -43,7 +62,7 @@ async function process(audio, sampleRate) {
     });
     const predictionArray = await predictionTensor.data();
     predictionTensor.dispose();
-    return predictionArray;
+    return smooth(predictionArray);
 }
 
 function drawPieChart(canvasID, distribution, timeFn) {
