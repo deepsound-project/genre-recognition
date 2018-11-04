@@ -1,9 +1,6 @@
 h5py==2.8.0
 librosa==0.6.1
-matplotlib
 numpy
-PyYAML==3.13
 scipy
 tensorflow==1.9.0
 tensorflowjs==0.5.7
-tornado==5.0.2
