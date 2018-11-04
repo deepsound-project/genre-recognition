@@ -18,6 +18,10 @@
 <body>
     <img src="img/deepsound.png" alt="DeepSound" id="logo" class="logo-big">
     <div id="container">
+        <div id="message-upload" class="message">
+            <p>This is a demo of music genre recognition using a convolutional neural network running inside your browser. To start, click the button below and upload a song. A visualization will be shown, presenting the network's belief about the genre of the song at any given point in time.</p>
+            <p>This app has been tested on Google Chrome. It most likely won't work on other browsers.</p>
+        </div>
         <div id="upload">
             <form enctype="multipart/form-data">
                 <div>
@@ -25,6 +29,9 @@
                     <input name="filearg" type="file">
                 </div>
             </form>
+        </div>
+        <div id="message-wave" class="message">
+            <p>Please wait while your song is being processed. This may take a minute or two depending on the length of the song.</p>
         </div>
         <div id="wave" class="modal"></div>
         <div id="pills"></div>

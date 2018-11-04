@@ -146,6 +146,8 @@ async function sendForm() {
     });
 
     $('#upload').fadeOut(300, function() {
+        $('#message-upload').hide();
+        $('#message-wave').show();
         wave.start();
         $('body').addClass('loading');
 
@@ -155,6 +157,7 @@ async function sendForm() {
             const channel = audioBuffer.getChannelData(0);
             process(channel, audioBuffer.sampleRate).then(function(prediction) {
                 wave.stop();
+                $('#message-wave').hide();
                 $('body').removeClass('loading');
                 $('.logo-big').removeClass('logo-big').addClass('logo-small');
 
