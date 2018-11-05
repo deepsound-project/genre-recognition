@@ -40,8 +40,8 @@ def extract_filters(model, data, filters_path, count0):
 
     for name in conv_layer_names:
         layer = model.get_layer(name)
-        length = layer.kernel_size
-        stride = layer.strides
+        (length,) = layer.kernel_size
+        (stride,) = layer.strides
 
         # undo the convolution layer
         undoer = compose(partial(undo_layer, length, stride), undoer)
