@@ -55,7 +55,7 @@ function smooth(prediction) {
 
 async function process(audio, sampleRate) {
     const spec = await preprocess([audio, sampleRate]);
-    const input = specToInputTensor(event.data);
+    const input = specToInputTensor(spec);
     const model = await modelPromise;
     const predictionTensor = tf.tidy(function() {
         return model.predict(input);
